@@ -42,6 +42,7 @@ class ViewController: NSViewController, WKNavigationDelegate, WKUIDelegate, NSTe
     }
     
     // MARK: Misc.
+    
     // enables or disables the backwards and forwards buttons, depending if forwards and backwards websites are available
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         if webView.canGoForward{
@@ -57,10 +58,9 @@ class ViewController: NSViewController, WKNavigationDelegate, WKUIDelegate, NSTe
         }
     }
     
-    // when finished editing the url bar, visually deselect it
+    // when finished editing the url bar, visually deselect it and the text
    func controlTextDidEndEditing(_ obj: Notification) {
-        urlBar.focusRingType = .none
-    }
+        urlBar.focusRingType = .none    }
     
     // MARK: Back + Forwards
     @IBAction func goForward(_ sender: Any) {
@@ -90,7 +90,12 @@ class ViewController: NSViewController, WKNavigationDelegate, WKUIDelegate, NSTe
     func formatInput(query: String){
         // if the query contains a space, the user wants to search
         if query.contains(" "){
-            // TODO: search
+            // since the query has a space, it is probably a search. lets assume as much and perform a search using DuckDuckGo
+            let formattedQuery = query.replacingOccurrences(of: " ", with: "+")
+            let url = "https://duckduckgo.com/?q=\(formattedQuery)&t=ht&ia=web"
+            // load the search URL
+            webView.load(url)
+            urlBar.stringValue = url
         }
         // if it doesn't have a space, it is a URL. however, it needs to be determined if it is HTTP or HTTPS
         else {
